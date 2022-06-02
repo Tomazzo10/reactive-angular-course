@@ -20,7 +20,11 @@ export function searchLessons(req: Request, res: Response) {
     let lessons;
 
     if (courseId) {
+<<<<<<< HEAD
      lessons = Object.values(LESSONS).filter(lesson => lesson.courseId == courseId).sort((l1, l2) => l1.id - l2.id);
+=======
+        lessons = Object.values(LESSONS).filter(lesson => lesson.courseId == courseId).sort((l1, l2) => l1.id - l2.id);
+>>>>>>> 1-start
     }
     else {
         lessons = Object.values(LESSONS);
