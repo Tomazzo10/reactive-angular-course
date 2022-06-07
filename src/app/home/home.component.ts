@@ -18,6 +18,7 @@ import { CourseDialogComponent } from "../course-dialog/course-dialog.component"
 import { CoursesService } from "../services/courses.service";
 import { LoadingService } from "../loading/loading.service";
 import { MessagesService } from "../messages/messages.service";
+import { CoursesStore } from "../services/courses.store";
 
 @Component({
   selector: "home",
@@ -33,8 +34,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private coursesService: CoursesService,
-    private loadingService: LoadingService,
-    private messagesService: MessagesService
+    private coursesStore: CoursesStore
   ) {}
 
   ngOnInit() {
@@ -42,35 +42,11 @@ export class HomeComponent implements OnInit {
   }
 
   reloadCourses() {
-    const courses$ = this.coursesService.loadAllCourses().pipe(
-      map((courses) => courses.sort(sortCoursesBySeqNo)),
+    this.beginnerCourses$ = this.coursesStore.filterByCategory("BEGINNER");
 
-      catchError((err) => {
-        const message = "Could not load courses";
-        this.messagesService.showErrors(message);
-        console.log(message, err);
-        return throwError(err);
-      })
-    );
+    this.intermediateCourses$ =
+      this.coursesStore.filterByCategory("INTERMEDIATE");
 
-    const loadCourses$ = this.loadingService.showLoaderUntilCompleted(courses$);
-
-    this.beginnerCourses$ = loadCourses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category == "BEGINNER")
-      )
-    );
-
-    this.intermediateCourses$ = loadCourses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category == "INTERMEDIATE")
-      )
-    );
-
-    this.advancedCourses$ = courses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category == "ADVANCED")
-      )
-    );
+    this.advancedCourses$ = this.coursesStore.filterByCategory("ADVANCED");
   }
 }
