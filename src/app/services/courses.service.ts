@@ -34,8 +34,8 @@ export class CoursesService {
 
   // Check get <Course[]> !!!
   loadAllCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>("/api/courses").pipe(
-      map((res) => res["payload"]),
+    return this.http.get<{ payload: Course[] }>("/api/courses").pipe(
+      map((res) => res.payload),
       shareReplay()
     );
   }
